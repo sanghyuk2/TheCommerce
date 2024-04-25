@@ -11,10 +11,12 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
   sql:
     init:
       mode: always
+      schema-locations: classpath*:sql/local/schema.sql
+      data-locations: classpath*:sql/local/data.sql
     output:
       ansi:
         enabled: always

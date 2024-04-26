@@ -2,10 +2,7 @@ package com.example.thecommerce.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,8 +32,17 @@ public class User {
     @Column(name = "join_date", nullable = false)
     private LocalDateTime joinDate;
 
+    @Column(name = "updated_date", nullable = false)
+    private LocalDateTime updatedDate;
+
     @PrePersist
     protected void onCreate() {
         joinDate = LocalDateTime.now();
+        updatedDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedDate = LocalDateTime.now();
     }
 }

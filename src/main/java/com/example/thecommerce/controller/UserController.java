@@ -26,10 +26,17 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public List<User> getUserList(
+    public ResponseEntity<List<User>> getUserList(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "joinDate") String sort) {
-        return userService.getUserList(page, pageSize, sort);
+        return ResponseEntity.ok().body(userService.getUserList(page, pageSize, sort));
+    }
+
+    @PutMapping("/{userid}")
+    public ResponseEntity<String> updateUser(@PathVariable String userid, @RequestBody UserReqDto userReqDto) {
+        String updatedColumns = userService.updateUser(userid, userReqDto);
+
+        return ResponseEntity.ok().body(updatedColumns);
     }
 }

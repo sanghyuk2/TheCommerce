@@ -7,5 +7,6 @@ CREATE TABLE User (
     username VARCHAR(100) NOT NULL UNIQUE,
     phonenumber VARCHAR(15) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    join_date DATETIME NOT NULL
+    join_date DATETIME NOT NULL,
+    updated_date DATETIME NOT NULL
 );

@@ -2,12 +2,17 @@ package com.example.thecommerce.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class User {
     @Id
     private Long userid;
@@ -26,4 +31,12 @@ public class User {
 
     @Column(nullable = false, length = 50)
     private String email;
+
+    @Column(name = "join_date", nullable = false)
+    private LocalDateTime joinDate;
+
+    @PrePersist
+    protected void onCreate() {
+        joinDate = LocalDateTime.now();
+    }
 }

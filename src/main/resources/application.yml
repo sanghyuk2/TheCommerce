@@ -11,12 +11,14 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   sql:
     init:
       mode: always
-      schema-locations: classpath*:sql/local/schema.sql
-      data-locations: classpath*:sql/local/data.sql
+      schema-locations: classpath*:local/sql/schema.sql
+      data-locations: classpath*:local/sql/data.sql
     output:
       ansi:
         enabled: always

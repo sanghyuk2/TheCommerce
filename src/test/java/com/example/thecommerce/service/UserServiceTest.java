@@ -1,7 +1,11 @@
 package com.example.thecommerce.service;
 
+import com.example.thecommerce.dto.UserReqDto;
 import com.example.thecommerce.entity.User;
+import com.example.thecommerce.exception.AppException;
+import com.example.thecommerce.exception.ErrorCode;
 import com.example.thecommerce.repository.UserRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -21,6 +26,7 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
+    @DisplayName("첫페이지 유저 두 명 출력")
     public void 첫페이지_유저_두명() {
         // 테스트용 유저 데이터 생성
         User user1 = User.builder()
@@ -60,5 +66,75 @@ public class UserServiceTest {
 
         // 예상되는 결과와 비교
         assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testUpdateUser_UserNotFound() {
+        // 존재하지 않는 사용자 아이디를 사용하여 updateUser 메서드 호출
+        AppException exception = assertThrows(AppException.class, () -> userService.updateUser("999", new UserReqDto()));
+
+        // 예상되는 결과와 비교
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("업데이트 내용 없음")
+    public void 업데이트_없음() {
+        // 사용자 데이터를 저장
+        User user = User.builder()
+                .userid(1L)
+                .password("password")
+                .nickname("nickname")
+                .username("username")
+                .phonenumber("1234567890")
+                .email("user@example.com")
+                .joinDate(LocalDateTime.now())
+                .build();
+
+        userRepository.save(user);
+
+        UserReqDto noUpdatedUserReqDto = new UserReqDto();
+        noUpdatedUserReqDto.setPassword("password");
+        noUpdatedUserReqDto.setNickname("nickname");
+        noUpdatedUserReqDto.setUserid(1L);
+        noUpdatedUserReqDto.setPhonenumber("1234567890");
+        noUpdatedUserReqDto.setEmail("user@example.com");
+        noUpdatedUserReqDto.setUsername("username");
+
+        // 변경사항이 없는 데이터로 updateUser 메서드 호출
+        String result = userService.updateUser("1", noUpdatedUserReqDto);
+
+        // 예상되는 결과와 비교
+        assertEquals("변경된 내용이 없습니다.", result);
+    }
+
+    @Test
+    @DisplayName("비밀번호, 닉네임 업데이트")
+    public void 업데이트_있음() {
+        // 사용자 데이터를 저장
+        User user = User.builder()
+                .userid(1L)
+                .password("password")
+                .nickname("nickname")
+                .username("username")
+                .phonenumber("1234567890")
+                .email("user@example.com")
+                .joinDate(LocalDateTime.now())
+                .build();
+        userRepository.save(user);
+
+        // 변경사항이 있는 데이터로 updateUser 메서드 호출
+        UserReqDto updatedUserReqDto = new UserReqDto();
+        updatedUserReqDto.setPassword("newPassword");
+        updatedUserReqDto.setNickname("newNickname");
+        updatedUserReqDto.setUserid(1L);
+        updatedUserReqDto.setPhonenumber("1234567890");
+        updatedUserReqDto.setEmail("user@example.com");
+        updatedUserReqDto.setUsername("username");
+
+        String result = userService.updateUser("1", updatedUserReqDto);
+
+        // 예상되는 결과와 비교
+        assertEquals("password, nickname 가(이) 변경되었습니다.", result);
     }
 }

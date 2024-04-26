@@ -32,6 +32,11 @@ dependencies {
 
     //mysql
     implementation 'mysql:mysql-connector-java:5.1.48'
+
+    //swagger
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 }
 
 tasks.named('test') {

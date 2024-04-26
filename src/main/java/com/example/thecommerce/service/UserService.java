@@ -11,7 +11,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,7 +33,7 @@ public class UserService {
                 });
 
         userRepository.save(userReqDto.toEntity());
-        log.info("info log = {}", "유저 저장 완료");
+        log.info("회원가입 = {}", "유저 회원가입 완료");
     }
 
     public List<User> getUserList(int page, int pageSize, String sort) {
@@ -54,5 +57,54 @@ public class UserService {
         }
 
         return userPage.getContent();
+    }
+
+    public String updateUser(String userid, UserReqDto userReqDto) {
+        Optional<User> optionalUser = userRepository.findByUserid(Long.parseLong(userid));
+
+        List<String> changedColumns = new ArrayList<>();
+
+        // 회원 업데이트
+        optionalUser.ifPresent(user -> {
+            User updatedUser = User.builder()
+                    .userid(userReqDto.getUserid())
+                    .password(userReqDto.getPassword())
+                    .nickname(userReqDto.getNickname())
+                    .username(userReqDto.getUsername())
+                    .phonenumber(userReqDto.getPhonenumber())
+                    .email(userReqDto.getEmail())
+                    .joinDate(user.getJoinDate())
+                    .updatedDate(LocalDateTime.now())
+                    .build();
+
+            // 변경된 컬럼 확인
+            if (!user.getPassword().equals(updatedUser.getPassword())) {
+                changedColumns.add("password");
+            }
+            if (!user.getNickname().equals(updatedUser.getNickname())) {
+                changedColumns.add("nickname");
+            }
+            if (!user.getUsername().equals(updatedUser.getUsername())) {
+                changedColumns.add("username");
+            }
+            if (!user.getPhonenumber().equals(updatedUser.getPhonenumber())) {
+                changedColumns.add("phonenumber");
+            }
+            if (!user.getEmail().equals(updatedUser.getEmail())) {
+                changedColumns.add("email");
+            }
+
+            userRepository.save(updatedUser);
+        });
+
+        if (!optionalUser.isPresent()) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND, "사용자를 찾을 수 없습니다.");
+        }
+
+        log.info("업데이트 = {}", "유저 업데이트 완료");
+
+        String changedColumnsString = String.join(", ", changedColumns);
+
+        return changedColumnsString.isEmpty() ? "변경된 내용이 없습니다." : changedColumnsString + " 가(이) 변경되었습니다.";
     }
 }

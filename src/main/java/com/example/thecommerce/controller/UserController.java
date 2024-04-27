@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<String> join(@RequestBody UserReqDto userReqDto) {
+    public ResponseEntity<String> join(@Valid @RequestBody UserReqDto userReqDto) {
         userService.join(userReqDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("회원 가입 성공");
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping("/{userid}")
-    public ResponseEntity<String> updateUser(@PathVariable String userid, @RequestBody UserReqDto userReqDto) {
+    public ResponseEntity<String> updateUser(@PathVariable String userid, @Valid @RequestBody UserReqDto userReqDto) {
         String updatedColumns = userService.updateUser(userid, userReqDto);
 
         return ResponseEntity.ok().body(updatedColumns);

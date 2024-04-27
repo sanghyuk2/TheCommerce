@@ -60,46 +60,40 @@ public class UserService {
     }
 
     public String updateUser(String userid, UserReqDto userReqDto) {
-        Optional<User> optionalUser = userRepository.findByUserid(Long.parseLong(userid));
 
-        List<String> changedColumns = new ArrayList<>();
-
-        // 회원 업데이트
-        optionalUser.ifPresent(user -> {
-            User updatedUser = User.builder()
-                    .userid(userReqDto.getUserid())
-                    .password(userReqDto.getPassword())
-                    .nickname(userReqDto.getNickname())
-                    .username(userReqDto.getUsername())
-                    .phonenumber(userReqDto.getPhonenumber())
-                    .email(userReqDto.getEmail())
-                    .joinDate(user.getJoinDate())
-                    .updatedDate(LocalDateTime.now())
-                    .build();
-
-            // 변경된 컬럼 확인
-            if (!user.getPassword().equals(updatedUser.getPassword())) {
-                changedColumns.add("password");
-            }
-            if (!user.getNickname().equals(updatedUser.getNickname())) {
-                changedColumns.add("nickname");
-            }
-            if (!user.getUsername().equals(updatedUser.getUsername())) {
-                changedColumns.add("username");
-            }
-            if (!user.getPhonenumber().equals(updatedUser.getPhonenumber())) {
-                changedColumns.add("phonenumber");
-            }
-            if (!user.getEmail().equals(updatedUser.getEmail())) {
-                changedColumns.add("email");
-            }
-
-            userRepository.save(updatedUser);
-        });
+        Optional<User> optionalUser = userRepository.findByUserid(userid);
 
         if (!optionalUser.isPresent()) {
             throw new AppException(ErrorCode.USER_NOT_FOUND, "사용자를 찾을 수 없습니다.");
         }
+
+        List<String> changedColumns = new ArrayList<>();
+
+        User user = optionalUser.get();
+
+        // 회원 업데이트
+        if (!user.getPassword().equals(userReqDto.getPassword())) {
+            user.setPassword(userReqDto.getPassword());
+            changedColumns.add("password");
+        }
+        if (!user.getNickname().equals(userReqDto.getNickname())) {
+            user.setNickname(userReqDto.getNickname());
+            changedColumns.add("nickname");
+        }
+        if (!user.getUsername().equals(userReqDto.getUsername())) {
+            user.setUsername(userReqDto.getUsername());
+            changedColumns.add("username");
+        }
+        if (!user.getPhonenumber().equals(userReqDto.getPhonenumber())) {
+            user.setPhonenumber(userReqDto.getPhonenumber());
+            changedColumns.add("phonenumber");
+        }
+        if (!user.getEmail().equals(userReqDto.getEmail())) {
+            user.setEmail(userReqDto.getEmail());
+            changedColumns.add("email");
+        }
+
+        userRepository.save(user);
 
         log.info("업데이트 = {}", "유저 업데이트 완료");
 

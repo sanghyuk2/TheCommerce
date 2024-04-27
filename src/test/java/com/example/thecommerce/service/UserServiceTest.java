@@ -1,5 +1,6 @@
 package com.example.thecommerce.service;
 
+import com.example.thecommerce.controller.UserController;
 import com.example.thecommerce.dto.UserReqDto;
 import com.example.thecommerce.entity.User;
 import com.example.thecommerce.exception.AppException;
@@ -9,12 +10,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -24,6 +29,9 @@ public class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserController userController;
 
     @Test
     @DisplayName("첫페이지 유저 두 명 출력")
@@ -136,5 +144,23 @@ public class UserServiceTest {
 
         // 예상되는 결과와 비교
         assertEquals("password, nickname 가(이) 변경되었습니다.", result);
+    }
+
+    @Test
+    @DisplayName("잘못된 형태의 DTO로 회원가입 요청 - 유효하지 않은 이메일 형식")
+    public void 회원가입_잘못된_이메일_형식() {
+        // 유효하지 않은 이메일 주소를 가진 가짜 요청 DTO 생성
+        UserReqDto userReqDto = new UserReqDto();
+        userReqDto.setUserid(1L);
+        userReqDto.setPassword("password");
+        userReqDto.setNickname("nickname");
+        userReqDto.setUsername("username");
+        userReqDto.setPhonenumber("3456789012");
+        userReqDto.setEmail("invalid_email_format"); // 유효하지 않은 이메일 형식
+
+        // 예상한 HttpStatus가 반환되는지 확인
+        assertThrows(RuntimeException.class, () -> {
+            userController.join(userReqDto);
+        });
     }
 }

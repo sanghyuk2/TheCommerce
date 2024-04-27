@@ -6,6 +6,7 @@ import com.example.thecommerce.entity.User;
 import com.example.thecommerce.exception.AppException;
 import com.example.thecommerce.exception.ErrorCode;
 import com.example.thecommerce.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class UserServiceTest {
 
     @Autowired
     private UserController userController;
+
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("첫페이지 유저 두 명 출력")
@@ -140,7 +146,7 @@ public class UserServiceTest {
         updatedUserReqDto.setEmail("user@example.com");
         updatedUserReqDto.setUsername("username");
 
-        String result = userService.updateUser("1", updatedUserReqDto);
+        String result = userService.updateUser("userid", updatedUserReqDto);
 
         // 예상되는 결과와 비교
         assertEquals("password, nickname 가(이) 변경되었습니다.", result);

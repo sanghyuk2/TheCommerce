@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class UserReqDto {
-    private Long userid;
+    private String userid;
     private String password;
     private String nickname;
     private String username;

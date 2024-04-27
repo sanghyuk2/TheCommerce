@@ -38,7 +38,7 @@ public class UserServiceTest {
     public void 첫페이지_유저_두명() {
         // 테스트용 유저 데이터 생성
         User user1 = User.builder()
-                .userid(1L)
+                .userid("userid1")
                 .password("password1")
                 .nickname("이")
                 .username("이")
@@ -47,7 +47,7 @@ public class UserServiceTest {
                 .joinDate(LocalDateTime.now())
                 .build();
         User user2 = User.builder()
-                .userid(2L)
+                .userid("userid2")
                 .password("password2")
                 .nickname("상")
                 .username("상")
@@ -56,7 +56,7 @@ public class UserServiceTest {
                 .joinDate(LocalDateTime.now().minusDays(1))
                 .build();
         User user3 = User.builder()
-                .userid(3L)
+                .userid("userid3")
                 .password("password3")
                 .nickname("혁")
                 .username("혁")
@@ -90,7 +90,7 @@ public class UserServiceTest {
     public void 업데이트_없음() {
         // 사용자 데이터를 저장
         User user = User.builder()
-                .userid(1L)
+                .userid("userid")
                 .password("password")
                 .nickname("nickname")
                 .username("username")
@@ -104,13 +104,13 @@ public class UserServiceTest {
         UserReqDto noUpdatedUserReqDto = new UserReqDto();
         noUpdatedUserReqDto.setPassword("password");
         noUpdatedUserReqDto.setNickname("nickname");
-        noUpdatedUserReqDto.setUserid(1L);
+        noUpdatedUserReqDto.setUserid("userid");
         noUpdatedUserReqDto.setPhonenumber("1234567890");
         noUpdatedUserReqDto.setEmail("user@example.com");
         noUpdatedUserReqDto.setUsername("username");
 
         // 변경사항이 없는 데이터로 updateUser 메서드 호출
-        String result = userService.updateUser("1", noUpdatedUserReqDto);
+        String result = userService.updateUser("userid", noUpdatedUserReqDto);
 
         // 예상되는 결과와 비교
         assertEquals("변경된 내용이 없습니다.", result);
@@ -121,7 +121,7 @@ public class UserServiceTest {
     public void 업데이트_있음() {
         // 사용자 데이터를 저장
         User user = User.builder()
-                .userid(1L)
+                .userid("userid")
                 .password("password")
                 .nickname("nickname")
                 .username("username")
@@ -135,7 +135,7 @@ public class UserServiceTest {
         UserReqDto updatedUserReqDto = new UserReqDto();
         updatedUserReqDto.setPassword("newPassword");
         updatedUserReqDto.setNickname("newNickname");
-        updatedUserReqDto.setUserid(1L);
+        updatedUserReqDto.setUserid("userid");
         updatedUserReqDto.setPhonenumber("1234567890");
         updatedUserReqDto.setEmail("user@example.com");
         updatedUserReqDto.setUsername("username");
@@ -151,7 +151,7 @@ public class UserServiceTest {
     public void 회원가입_잘못된_이메일_형식() {
         // 유효하지 않은 이메일 주소를 가진 가짜 요청 DTO 생성
         UserReqDto userReqDto = new UserReqDto();
-        userReqDto.setUserid(1L);
+        userReqDto.setUserid("userid");
         userReqDto.setPassword("password");
         userReqDto.setNickname("nickname");
         userReqDto.setUsername("username");

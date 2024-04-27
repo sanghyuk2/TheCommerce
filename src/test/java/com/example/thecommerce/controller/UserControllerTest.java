@@ -25,7 +25,7 @@ class UserControllerTest {
 
         // 가짜 요청 DTO 생성
         UserReqDto userReqDto = new UserReqDto();
-        userReqDto.setUserid(1L);
+        userReqDto.setUserid("userid");
         userReqDto.setPassword("password");
         userReqDto.setNickname("nickname");
         userReqDto.setUsername("username");
@@ -35,6 +35,6 @@ class UserControllerTest {
         ResponseEntity<String> response = userController.join(userReqDto);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("회원 가입 성공", response.getBody());
-        verify(userRepository, times(1)).findByUserid(1L);
+        verify(userRepository, times(1)).findByUserid("userid");
     }
 }

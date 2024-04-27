@@ -10,10 +10,14 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Getter @Setter
 public class User {
     @Id
-    private Long userid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 100, unique = true)
+    private String userid;
 
     @Column(nullable = false, length = 100)
     private String password;
